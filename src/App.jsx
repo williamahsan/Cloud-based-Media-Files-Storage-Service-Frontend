@@ -2,6 +2,7 @@ import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
 import { AuthProvider, useAuth } from './context/AuthContext';
 import Login from './pages/Login';
 import Signup from './pages/Signup';
+import Dashboard from './pages/Dashboard';
 
 function ProtectedRoute({ children }) {
   const { user, loading } = useAuth();
@@ -10,21 +11,21 @@ function ProtectedRoute({ children }) {
   return children;
 }
 
-function DashboardPlaceholder() {
-  const { user, logout } = useAuth();
-  return (
-    <div className="p-8">
-      <h1 className="text-2xl font-bold">Welcome, {user?.name || user?.display_name || user?.email}</h1>
-      <p className="text-slate-500 mt-1">Ready for Day 9: Dashboard Layout & File Explorer UI.</p>
-      <button
-        onClick={logout}
-        className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg"
-      >
-        Sign Out
-      </button>
-    </div>
-  );
-}
+// function DashboardPlaceholder() {
+//   const { user, logout } = useAuth();
+//   return (
+//     <div className="p-8">
+//       <h1 className="text-2xl font-bold">Welcome, {user?.name || user?.display_name || user?.email}</h1>
+//       <p className="text-slate-500 mt-1">Ready for Day 9: Dashboard Layout & File Explorer UI.</p>
+//       <button
+//         onClick={logout}
+//         className="mt-4 px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white text-sm font-medium rounded-lg"
+//       >
+//         Sign Out
+//       </button>
+//     </div>
+//   );
+// }
 
 export default function App() {
   return (
@@ -37,7 +38,7 @@ export default function App() {
             path="/"
             element={
               <ProtectedRoute>
-                <DashboardPlaceholder />
+                <Dashboard />
               </ProtectedRoute>
             }
           />
