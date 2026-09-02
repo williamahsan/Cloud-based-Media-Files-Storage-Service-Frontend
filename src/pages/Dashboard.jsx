@@ -6,6 +6,8 @@ import Breadcrumbs from '../components/Breadcrumbs';
 import QuickAccess from '../components/QuickAccess';
 import FileList from '../components/FileList';
 import NewFolderModal from '../components/NewFolderModal';
+import UploadModal from '../components/UploadModal';
+import FilePreviewModal from '../components/FilePreviewModal';
 import { FolderPlus, UploadCloud } from 'lucide-react';
 
 export default function Dashboard() {
@@ -14,7 +16,11 @@ export default function Dashboard() {
   const [files, setFiles] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState([{ id: 'root', name: 'My Files' }]);
   const [loading, setLoading] = useState(true);
+
+  // Modal States
   const [isNewFolderOpen, setIsNewFolderOpen] = useState(false);
+  const [isUploadOpen, setIsUploadOpen] = useState(false);
+  const [previewFile, setPreviewFile] = useState(null);
 
   const fetchFolderContent = async (folderId) => {
     setLoading(true);
@@ -64,8 +70,8 @@ export default function Dashboard() {
 
             <div className="flex items-center gap-2.5">
               <button
-                onClick={() => alert('File upload will be implemented in Day 10!')}
-                className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white font-medium rounded-xl text-sm shadow-sm transition flex items-center gap-2"
+                onClick={() => setIsUploadOpen(true)}
+                className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-slate-700 font-medium rounded-xl text-sm shadow-sm transition flex items-center gap-2"
               >
                 <UploadCloud className="h-4 w-4" />
                 <span>Upload files</span>
@@ -91,6 +97,7 @@ export default function Dashboard() {
               folders={folders}
               files={files}
               onFolderClick={fetchFolderContent}
+              onFilePreview={(file) => setPreviewFile(file)}
             />
           )}
         </main>
@@ -100,6 +107,18 @@ export default function Dashboard() {
         isOpen={isNewFolderOpen}
         onClose={() => setIsNewFolderOpen(false)}
         onCreate={handleCreateFolder}
+      />
+
+      <UploadModal
+        isOpen={isUploadOpen}
+        onClose={() => setIsUploadOpen(false)}
+        currentFolderId={currentFolderId}
+        onUploadSuccess={() => fetchFolderContent(currentFolderId)}
+      />
+
+      <FilePreviewModal
+        file={previewFile}
+        onClose={() => setPreviewFile(null)}
       />
     </div>
   );
