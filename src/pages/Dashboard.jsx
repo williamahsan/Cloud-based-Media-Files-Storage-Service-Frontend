@@ -9,6 +9,7 @@ import NewFolderModal from '../components/NewFolderModal';
 import UploadModal from '../components/UploadModal';
 import FilePreviewModal from '../components/FilePreviewModal';
 import { FolderPlus, UploadCloud } from 'lucide-react';
+import ShareModal from '../components/ShareModal';
 
 export default function Dashboard() {
   const [currentFolderId, setCurrentFolderId] = useState('root');
@@ -21,6 +22,8 @@ export default function Dashboard() {
   const [isNewFolderOpen, setIsNewFolderOpen] = useState(false);
   const [isUploadOpen, setIsUploadOpen] = useState(false);
   const [previewFile, setPreviewFile] = useState(null);
+  const [isShareModalOpen, setIsShareModalOpen] = useState(false);
+  const [resourceToShare, setResourceToShare] = useState(null);
 
   const fetchFolderContent = async (folderId) => {
     setLoading(true);
@@ -51,6 +54,11 @@ export default function Dashboard() {
     } catch (err) {
       alert(err.response?.data?.error?.message || 'Failed to create folder');
     }
+  };
+
+  const handleShareClick = (resource) => {
+    setResourceToShare(resource);
+    setIsShareModalOpen(true);
   };
 
   return (
@@ -98,6 +106,7 @@ export default function Dashboard() {
               files={files}
               onFolderClick={fetchFolderContent}
               onFilePreview={(file) => setPreviewFile(file)}
+              onShare={handleShareClick}
             />
           )}
         </main>
@@ -120,6 +129,15 @@ export default function Dashboard() {
         file={previewFile}
         onClose={() => setPreviewFile(null)}
       />
+
+      <ShareModal
+      isOpen={isShareModalOpen}
+      onClose={() => {
+        setIsShareModalOpen(false);
+        setResourceToShare(null);
+      }}
+      resource={resourceToShare}
+    />
     </div>
   );
 }

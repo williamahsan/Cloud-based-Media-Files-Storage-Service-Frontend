@@ -1,6 +1,6 @@
 import { Folder, FileText, Image, Video, Music, File, MoreVertical, Eye } from 'lucide-react';
 
-export default function FileList({ folders, files, onFolderClick, onFilePreview }) {
+export default function FileList({ folders, files, onFolderClick, onFilePreview, onShare }) {
   const formatBytes = (bytes) => {
     if (!bytes || bytes === 0) return '--';
     const k = 1024;
@@ -66,7 +66,16 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview 
                 <td className="py-3.5 px-6 text-slate-500">Me</td>
                 <td className="py-3.5 px-6 text-slate-500">{formatDate(folder.updated_at)}</td>
                 <td className="py-3.5 px-6 text-slate-400">--</td>
-                <td className="py-3.5 px-6 text-right">
+                <td className="py-3.5 px-6 text-right flex items-center justify-end gap-1.5">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onShare({ id: folder.id, type: 'folder', name: folder.name });
+                    }}
+                    className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 rounded-lg text-xs font-medium transition"
+                  >
+                    Share
+                  </button>
                   <button
                     onClick={() => onFolderClick(folder.id)}
                     className="px-3 py-1 bg-slate-100 hover:bg-slate-200 text-slate-700 font-medium text-xs rounded-lg transition"
@@ -94,6 +103,15 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview 
                 <td className="py-3.5 px-6 text-slate-500">{formatDate(file.updated_at)}</td>
                 <td className="py-3.5 px-6 text-slate-500">{formatBytes(file.size_bytes)}</td>
                 <td className="py-3.5 px-6 text-right flex items-center justify-end gap-1.5">
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onShare({ id: file.id, type: 'file', name: file.name });
+                    }}
+                    className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 rounded-lg text-xs font-medium transition"
+                  >
+                    Share
+                  </button>
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
