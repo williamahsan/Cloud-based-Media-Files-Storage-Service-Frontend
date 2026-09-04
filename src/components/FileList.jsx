@@ -1,6 +1,15 @@
-import { Folder, FileText, Image, Video, Music, File, MoreVertical, Eye } from 'lucide-react';
+import { Folder, FileText, Image, Video, Music, File, MoreVertical, Eye, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
 
-export default function FileList({ folders, files, onFolderClick, onFilePreview, onShare }) {
+export default function FileList({
+  folders,
+  files,
+  onFolderClick,
+  onFilePreview,
+  onShare,
+  sortConfig,
+  onSortChange,
+  onVersionClick
+}) {
   const formatBytes = (bytes) => {
     if (!bytes || bytes === 0) return '--';
     const k = 1024;
@@ -26,6 +35,17 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview,
     return <File className="h-4 w-4 text-slate-400" />;
   };
 
+  const renderSortIndicator = (columnKey) => {
+    if (sortConfig.key !== columnKey) {
+      return <ArrowUpDown className="h-3.5 w-3.5 text-slate-300 group-hover:text-slate-500" />;
+    }
+    return sortConfig.direction === 'asc' ? (
+      <ArrowUp className="h-3.5 w-3.5 text-brand-600" />
+    ) : (
+      <ArrowDown className="h-3.5 w-3.5 text-brand-600" />
+    );
+  };
+
   const hasItems = folders.length > 0 || files.length > 0;
 
   return (
@@ -36,21 +56,52 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview,
 
       {!hasItems ? (
         <div className="py-16 text-center text-slate-400 text-sm">
-          This folder is empty. Create a folder or upload files to get started.
+          No files or folders found matching the current criteria.
         </div>
       ) : (
         <table className="w-full text-left border-collapse text-sm">
           <thead>
-            <tr className="border-b border-slate-100 text-slate-400 text-xs font-semibold uppercase bg-slate-50/50">
-              <th className="py-3 px-6">Name</th>
+            <tr className="border-b border-slate-100 text-slate-400 text-xs font-semibold uppercase bg-slate-50/50 select-none">
+              {/* Name Column */}
+              <th
+                onClick={() => onSortChange('name')}
+                className="py-3 px-6 cursor-pointer hover:text-slate-700 transition group"
+              >
+                <div className="flex items-center gap-1.5">
+                  <span>Name</span>
+                  {renderSortIndicator('name')}
+                </div>
+              </th>
+
               <th className="py-3 px-6">Owner</th>
-              <th className="py-3 px-6">Last modified</th>
-              <th className="py-3 px-6">Size</th>
+
+              {/* Date Column */}
+              <th
+                onClick={() => onSortChange('updated_at')}
+                className="py-3 px-6 cursor-pointer hover:text-slate-700 transition group"
+              >
+                <div className="flex items-center gap-1.5">
+                  <span>Last modified</span>
+                  {renderSortIndicator('updated_at')}
+                </div>
+              </th>
+
+              {/* Size Column */}
+              <th
+                onClick={() => onSortChange('size_bytes')}
+                className="py-3 px-6 cursor-pointer hover:text-slate-700 transition group"
+              >
+                <div className="flex items-center gap-1.5">
+                  <span>Size</span>
+                  {renderSortIndicator('size_bytes')}
+                </div>
+              </th>
+
               <th className="py-3 px-6 text-right">Actions</th>
             </tr>
           </thead>
           <tbody className="divide-y divide-slate-100">
-            {/* Render Folders First */}
+            {/* Folders */}
             {folders.map((folder) => (
               <tr
                 key={folder.id}
@@ -70,7 +121,7 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview,
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onShare({ id: folder.id, type: 'folder', name: folder.name });
+                      onShare && onShare({ id: folder.id, type: 'folder', name: folder.name });
                     }}
                     className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 rounded-lg text-xs font-medium transition"
                   >
@@ -86,7 +137,7 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview,
               </tr>
             ))}
 
-            {/* Render Files */}
+            {/* Files */}
             {files.map((file) => (
               <tr
                 key={file.id}
@@ -106,7 +157,7 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview,
                   <button
                     onClick={(e) => {
                       e.stopPropagation();
-                      onShare({ id: file.id, type: 'file', name: file.name });
+                      onShare && onShare({ id: file.id, type: 'file', name: file.name });
                     }}
                     className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 rounded-lg text-xs font-medium transition"
                   >
@@ -120,6 +171,16 @@ export default function FileList({ folders, files, onFolderClick, onFilePreview,
                     className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 rounded-lg text-xs font-medium flex items-center gap-1 transition"
                   >
                     <Eye className="h-3.5 w-3.5" /> Preview
+                  </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onVersionClick(file);
+                    }}
+                    className="px-2.5 py-1 text-slate-600 hover:bg-slate-100 rounded-lg text-xs font-medium transition"
+                    title="Version history"
+                  >
+                    Versions
                   </button>
                   <button className="text-slate-400 hover:text-slate-600 p-1 rounded transition">
                     <MoreVertical className="h-4 w-4" />

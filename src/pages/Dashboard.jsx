@@ -11,6 +11,7 @@ import UploadModal from '../components/UploadModal';
 import FilePreviewModal from '../components/FilePreviewModal';
 import ShareModal from '../components/ShareModal';
 import { FolderPlus, UploadCloud, X } from 'lucide-react';
+import VersionModal from '../components/VersionModal';
 
 export default function Dashboard() {
   const [currentFolderId, setCurrentFolderId] = useState('root');
@@ -18,6 +19,7 @@ export default function Dashboard() {
   const [files, setFiles] = useState([]);
   const [breadcrumbs, setBreadcrumbs] = useState([{ id: 'root', name: 'My Files' }]);
   const [loading, setLoading] = useState(true);
+  const [versionFile, setVersionFile] = useState(null);
 
   // Search & Filter State
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
@@ -218,6 +220,7 @@ export default function Dashboard() {
               onShare={(res) => setResourceToShare(res)}
               sortConfig={sortConfig}
               onSortChange={handleSortChange}
+              onVersionClick={(file) => setVersionFile(file)}
             />
           )}
         </main>
@@ -255,6 +258,13 @@ export default function Dashboard() {
         isOpen={!!resourceToShare}
         onClose={() => setResourceToShare(null)}
         resource={resourceToShare}
+      />
+
+      <VersionModal
+        file={versionFile}
+        isOpen={!!versionFile}
+        onClose={() => setVersionFile(null)}
+        onVersionReverted={() => fetchFolderContent(currentFolderId)}
       />
     </div>
   );
