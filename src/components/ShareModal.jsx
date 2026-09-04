@@ -109,7 +109,7 @@ export default function ShareModal({ isOpen, onClose, resource }) {
           <button
             type="submit"
             disabled={loading || !email}
-            className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-white text-sm font-medium rounded-xl transition disabled:opacity-50"
+            className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-slate-600 text-sm font-medium rounded-xl transition disabled:opacity-50"
           >
             Share
           </button>

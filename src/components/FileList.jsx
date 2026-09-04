@@ -1,4 +1,4 @@
-import { Folder, FileText, Image, Video, Music, File, MoreVertical, Eye, ArrowUpDown, ArrowUp, ArrowDown } from 'lucide-react';
+import { Folder, FileText, Image, Video, Music, File, MoreVertical, Eye, ArrowUpDown, ArrowUp, ArrowDown, Trash2, Star } from 'lucide-react';
 
 export default function FileList({
   folders,
@@ -8,7 +8,10 @@ export default function FileList({
   onShare,
   sortConfig,
   onSortChange,
-  onVersionClick
+  onVersionClick,
+  onDeleteFile,
+  starredIds = new Set(),
+  onToggleStar
 }) {
   const formatBytes = (bytes) => {
     if (!bytes || bytes === 0) return '--';
@@ -138,13 +141,31 @@ export default function FileList({
             ))}
 
             {/* Files */}
-            {files.map((file) => (
+            {files.map((file) => {
+              const isStarred = starredIds.has(file.id);
+              return (
               <tr
                 key={file.id}
                 onDoubleClick={() => onFilePreview(file)}
                 className="hover:bg-slate-50 transition group cursor-pointer"
               >
                 <td className="py-3.5 px-6 font-medium text-slate-800 flex items-center gap-3">
+                  <button
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        onToggleStar && onToggleStar(file);
+                      }}
+                      className="text-slate-300 hover:text-amber-500 transition p-0.5 rounded"
+                      title={isStarred ? "Unstar file" : "Star file"}
+                    >
+                      <Star 
+                        className={`h-4 w-4 ${
+                          isStarred 
+                            ? 'text-amber-500 fill-amber-500' 
+                            : 'hover:text-amber-400'
+                        }`} 
+                      />
+                    </button>
                   <div className="p-1.5 bg-slate-50 rounded-lg">
                     {getFileIcon(file.mime_type)}
                   </div>
@@ -182,12 +203,22 @@ export default function FileList({
                   >
                     Versions
                   </button>
+                  <button
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      onDeleteFile && onDeleteFile(file);
+                    }}
+                    className="p-1 text-slate-400 hover:text-red-600 hover:bg-red-50 rounded-lg transition"
+                    title="Move to trash"
+                  >
+                    <Trash2 className="h-4 w-4" />
+                  </button>
                   <button className="text-slate-400 hover:text-slate-600 p-1 rounded transition">
                     <MoreVertical className="h-4 w-4" />
                   </button>
                 </td>
               </tr>
-            ))}
+            )})}
           </tbody>
         </table>
       )}

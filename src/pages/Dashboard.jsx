@@ -20,6 +20,7 @@ export default function Dashboard() {
   const [breadcrumbs, setBreadcrumbs] = useState([{ id: 'root', name: 'My Files' }]);
   const [loading, setLoading] = useState(true);
   const [versionFile, setVersionFile] = useState(null);
+  const [starredIds, setStarredIds] = useState(new Set());
 
   // Search & Filter State
   const [activeSearchQuery, setActiveSearchQuery] = useState('');
@@ -146,6 +147,57 @@ export default function Dashboard() {
     };
   }, [folders, files, searchResults, sortConfig]);
 
+  const handleDeleteFile = async (file) => {
+    if (!confirm(`Are you sure you want to move "${file.name}" to Trash?`)) return;
+
+    try {
+      await api.delete(`/files/${file.id}`);
+      folderCache.invalidate(`folder:${currentFolderId}`);
+      fetchFolderContent(currentFolderId, true);
+    } catch (err) {
+      alert(err.response?.data?.error?.message || 'Failed to delete file');
+    }
+  };
+
+  const fetchStarredStatus = async () => {
+    try {
+      const { data } = await api.get('/stars');
+      const ids = new Set((data.files || []).map((f) => f.id));
+      setStarredIds(ids);
+    } catch (err) {
+      console.error('Failed to fetch stars:', err);
+    }
+  };
+
+  useEffect(() => {
+    fetchFolderContent(currentFolderId);
+    fetchStarredStatus();
+  }, []);
+
+  const handleToggleStar = async (file) => {
+    // Optimistic UI update
+    setStarredIds((prev) => {
+      const next = new Set(prev);
+      if (next.has(file.id)) {
+        next.delete(file.id);
+      } else {
+        next.add(file.id);
+      }
+      return next;
+    });
+
+    try {
+      await api.post('/stars/toggle', {
+        resourceType: 'file',
+        resourceId: file.id,
+      });
+    } catch (err) {
+      console.error('Failed to toggle star:', err);
+      // Revert state if the API request fails
+      fetchStarredStatus();
+    }
+  };
+
   return (
     <div className="flex h-screen bg-slate-50 overflow-hidden font-sans">
       <Sidebar onNewFolderClick={() => setIsNewFolderOpen(true)} />
@@ -221,6 +273,9 @@ export default function Dashboard() {
               sortConfig={sortConfig}
               onSortChange={handleSortChange}
               onVersionClick={(file) => setVersionFile(file)}
+              onDeleteFile={handleDeleteFile}
+              starredIds={starredIds}
+              onToggleStar={handleToggleStar}
             />
           )}
         </main>
