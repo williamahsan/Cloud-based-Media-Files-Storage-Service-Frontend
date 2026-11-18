@@ -237,7 +237,7 @@ export default function Dashboard() {
                 <>
                   <button
                     onClick={() => setIsUploadOpen(true)}
-                    className="px-4 py-2 bg-brand-600 hover:bg-brand-700 text-slate-700 font-medium rounded-xl text-sm shadow-sm transition flex items-center gap-2"
+                    className="px-4 py-2 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 font-medium rounded-xl text-sm shadow-xs transition flex items-center gap-2"
                   >
                     <UploadCloud className="h-4 w-4" />
                     <span>Upload files</span>

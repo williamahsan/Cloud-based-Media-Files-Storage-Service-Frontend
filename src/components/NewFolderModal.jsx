@@ -47,14 +47,14 @@ export default function NewFolderModal({ isOpen, onClose, onCreate }) {
             <button
               type="button"
               onClick={onClose}
-              className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition"
+              className="px-4 py-2 text-sm font-medium bg-brand-600 hover:bg-slate-100 text-slate-600 rounded-xl shadow-sm transition"
             >
               Cancel
             </button>
             <button
               type="submit"
               disabled={isSubmitting || !folderName.trim()}
-              className="px-4 py-2 text-sm font-medium bg-brand-600 hover:bg-brand-700 text-white rounded-xl shadow-sm transition disabled:opacity-50"
+              className="px-4 py-2 text-sm font-medium bg-brand-600 hover:bg-slate-100 text-slate-600 rounded-xl shadow-sm transition disabled:opacity-50"
             >
               {isSubmitting ? 'Creating...' : 'Create'}
             </button>

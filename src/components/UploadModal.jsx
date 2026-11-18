@@ -186,7 +186,7 @@ export default function UploadModal({ isOpen, onClose, currentFolderId, onUpload
           <button
             type="button"
             onClick={onClose}
-            className="px-4 py-2 text-sm font-medium text-slate-600 hover:bg-slate-100 rounded-xl transition"
+            className="px-4 py-2 text-sm font-medium text-slate-600 bg-brand-600 hover:bg-slate-100 rounded-xl shadow-sm transition"
           >
             Cancel
           </button>
@@ -194,7 +194,7 @@ export default function UploadModal({ isOpen, onClose, currentFolderId, onUpload
             type="button"
             onClick={onClose}
             disabled={uploadQueue.length > 0 && !allFinished}
-            className="px-5 py-2 text-sm font-medium bg-brand-600 hover:bg-brand-700 text-slate-600 rounded-xl shadow-sm transition disabled:opacity-50"
+            className="px-5 py-2 text-sm font-medium bg-brand-600 hover:bg-slate-100 text-slate-600 rounded-xl shadow-sm transition disabled:opacity-50"
           >
             Done
           </button>
